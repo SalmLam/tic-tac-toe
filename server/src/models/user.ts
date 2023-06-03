@@ -15,8 +15,8 @@ const UserSchema = new mongoose.Schema({
 export const UserModel = mongoose.model('User', UserSchema);
 
 // User Actions
-export const getUsersExceptMe = (email : string) => UserModel.find({
-  'email': { $ne: email },
+export const getUsersExceptMe = (id : string) => UserModel.find({
+  '_id': { $ne: id },
 });
 export const getUsers = () => UserModel.find();
 export const getUserByEmail = (email: string) => UserModel.findOne({ email });

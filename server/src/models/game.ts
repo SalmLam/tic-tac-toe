@@ -6,7 +6,7 @@ const GameSchema = new mongoose.Schema({
   firstPlayer: { type: Object, required: true},
   secondPlayer: { type: Object, required: true},
   winner: {type: Number, default: 0},
-  board:{type:Array, defaut:[0,0,0,0,0,0,0,0,0]}
+  board:{type:Array , defaut:[0,0,0,0,0,0,0,0,0]}
 });
 
 export const GameModel = mongoose.model('Game', GameSchema);

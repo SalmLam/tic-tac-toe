@@ -1,6 +1,6 @@
 
 
-export const checkEndOfGame = async (board : Array<number>) => {
+export const checkEndOfGame = async (board : number[] ) => {
     const winningPositions = [
         [0,1,2], [3,4,5], [6,7,8],
         [1,3,6], [1,4,7], [2,5,8],

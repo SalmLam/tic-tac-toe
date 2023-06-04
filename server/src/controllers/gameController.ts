@@ -74,9 +74,11 @@ export const createGame = async (req: express.Request, res: express.Response) =>
 
 export const updateGame = async (req: express.Request, res: express.Response) => {
     try {
-
         const game = req.body;  
         const id = req.params.id;
+        if (game.winner !== 0)
+            return res.status(403).json("The game is over");
+        game.winner = await checkEndOfGame(game.board);
         const updated = await updateGameById(id, game);
         
         if (!updated) 

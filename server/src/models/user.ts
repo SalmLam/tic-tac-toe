@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { ObjectId } from 'mongodb';
 
 // User Config
-const UserSchema = new mongoose.Schema({
+export const UserSchema = new mongoose.Schema({
   email: { type: String, required: true },
   username: { type: String, required: true },
   authentication: {

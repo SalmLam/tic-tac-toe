@@ -1,7 +1,8 @@
 import express from 'express';
 
-import { getGamesByPlayer, getGamesByOwner, deleteGameById, addGame} from '../models/game';
+import { getGamesByPlayer, getGamesByOwner, deleteGameById, addGame, updateGameById, getGameById} from '../models/game';
 import { getUserByEmail } from '../models/user';
+import { checkEndOfGame } from '../services/gameService';
 import {get, merge} from 'lodash';
 
 export const getOwnedGames = async (req: express.Request, res: express.Response) => {
@@ -41,7 +42,7 @@ export const removeGame = async (req: express.Request, res: express.Response) =>
         const deleted = await deleteGameById(id);
         
         if (!deleted) 
-            return res.status(500).json("The game was not deleted").end();
+            return res.status(500).json("The game was not deleted");
 
         return res.status(200).json(deleted);
     }catch(error) {
@@ -52,7 +53,7 @@ export const removeGame = async (req: express.Request, res: express.Response) =>
 export const createGame = async (req: express.Request, res: express.Response) => {
     try {
         let game : any = {};
-        
+
         /** TO REVIEW */
         const {secondPlayerEmail} = req.body;
         game.secondPlayer = await getUserByEmail(secondPlayerEmail);
@@ -65,9 +66,38 @@ export const createGame = async (req: express.Request, res: express.Response) =>
         if (!created) 
             return res.status(500).json("The game was not created").end();
 
-        return res.status(200).json(created);
+        return res.status(204).json(created);
     }catch(error) {
         res.status(500).json(`an error occured  : ${error}`);
     }
 }
 
+export const updateGame = async (req: express.Request, res: express.Response) => {
+    try {
+
+        const game = req.body;  
+        const id = req.params.id;
+        const updated = await updateGameById(id, game);
+        
+        if (!updated) 
+            return res.status(500).json("The game was not updated");
+
+        return res.status(200).json(game);
+    }catch(error) {
+        res.status(500).json(`an error occured  : ${error}`);
+    }
+}
+
+export const getGame = async (req: express.Request, res: express.Response) => {
+    try { 
+        const id = req.params.id;
+        const game = await getGameById(id);
+        
+        if (!game) 
+            return res.status(404).json("The game was not found");
+
+        return res.status(200).json(game);
+    }catch(error) {
+        res.status(500).json(`an error occured  : ${error}`);
+    }
+}

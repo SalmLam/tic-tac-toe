@@ -2,6 +2,7 @@ import express from 'express';
 import {get, merge} from 'lodash';
 
 import { getUserBySessionToken } from '../models/user';
+import { getGameById } from '../models/game';
 
 export const isAuthenticated = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try {
@@ -30,14 +31,37 @@ export const isAuthenticated = async (req: express.Request, res: express.Respons
 /** the owner of a game is by defaul the first player */
 export const isOwner = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try {
-        const {ownerId} = req.params;
+        const id = req.params.id;
+        const game = await getGameById(id);
 
         const currentUserId = get(req, 'identity._id') as string;
 
         if (!currentUserId) {
             res.status(403).json(`unauthorized`);
         }
-        if (currentUserId !== ownerId) {
+        if (currentUserId.toString() !== game.firstPlayer._id.toString()) {
+            res.status(403).json(`unauthorized`);
+        }
+
+        return next();
+
+    }catch (error) {
+        res.status(500).json(`an error occured  : ${error}`);
+    }
+}
+
+
+export const isPlayer = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    try {
+        const id = req.params.id;
+        const game = await getGameById(id);
+
+        const currentUserId = get(req, 'identity._id') as string;
+
+        if (!currentUserId) {
+            res.status(403).json(`unauthorized`);
+        }
+        if (currentUserId.toString() !== game.firstPlayer._id.toString() && currentUserId.toString() !== game.secondPlayer._id.toString()) {
             res.status(403).json(`unauthorized`);
         }
 

@@ -24,3 +24,4 @@ export const getGamesByOwner = (id : string) => GameModel.find({
 export const addGame = (values: Record<string, any>) => new GameModel(values).save().then((game) => game.toObject());
 export const deleteGameById = (id: string) => GameModel.findOneAndDelete({ _id: id });
 export const getGameById = (id: string) => GameModel.findById(id);
+export const updateGameById = (id: string, values: Record<string, any>) => GameModel.findByIdAndUpdate(id, values);
